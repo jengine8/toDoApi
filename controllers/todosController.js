@@ -46,8 +46,9 @@ todosController.getAllTodos = async (req, res, next) => {
     });
 
     let { owner } = req.params;
-    let { limit, page } = req.query;
+
     let isNumber = Number.parseInt(owner);
+
     if (owner == null || owner == "" || !Number.isInteger(isNumber)) {
       return res
         .status(STATUS.NOT_FOUND)
@@ -80,17 +81,32 @@ todosController.getTodo = async (req, res, next) => {
       message: `start process to searching todo information`,
     });
 
+    // for more security is posisble to extract the owner of each todo that is located in jwt
+    // and first query if
+    // the owner really is who try to update this todo
+    // let {owner} = req.decoded;
+    // in this case the id is in query params
+
+    let { owner } = req.query;
     let { todo } = req.params;
+
     let isNumber = Number.parseInt(todo);
     if (todo == null || todo == "" || !Number.isInteger(isNumber)) {
       return res
         .status(STATUS.NOT_FOUND)
         .json({ msg: "Missing todo id parameter..." });
     }
-    let todos = await mysql.query("SELECT * FROM ?? WHERE id= ?", [
-      _table,
-      todo,
-    ]);
+
+    if (owner == null || owner == "") {
+      return res
+        .status(STATUS.UNAUTHORIZED)
+        .json({ msg: "Missing owner query parameter..." });
+    }
+
+    let todos = await mysql.query(
+      "SELECT * FROM ?? WHERE id= ? AND owner = ?",
+      [_table, todo, owner]
+    );
 
     if (todos.length > 0) {
       return res.json({ msg: "Results found", todos });
@@ -117,7 +133,14 @@ todosController.updateToDo = async (req, res, next) => {
       message: `start process to updating todo information`,
     });
 
+    // for more security is posisble to extract the owner of each todo that is located in jwt
+    // and first query if
+    // the owner really is who try to update this todo
+    // let {owner} = req.decoded;
+    // in this case the id is in query params
+
     let { todo } = req.params;
+    let { owner } = req.query;
 
     let isNumber = Number.parseInt(todo);
     if (todo == null || todo == "" || !Number.isInteger(isNumber)) {
@@ -125,11 +148,17 @@ todosController.updateToDo = async (req, res, next) => {
         .status(STATUS.NOT_FOUND)
         .json({ msg: "Missing todo id parameter..." });
     }
-    let todos = await mysql.query("UPDATE ?? SET ? WHERE id = ?", [
-      _table,
-      req.body,
-      todo,
-    ]);
+
+    if (owner == null || owner == "") {
+      return res
+        .status(STATUS.UNAUTHORIZED)
+        .json({ msg: "Missing owner query parameter..." });
+    }
+
+    let todos = await mysql.query(
+      "UPDATE ?? SET ? WHERE id = ? AND owner = ? ",
+      [_table, req.body, todo, owner]
+    );
 
     if (todos.affectedRows > 0) {
       return res.json({ msg: "To do updated successfully..." });
@@ -155,8 +184,14 @@ todosController.deleteToDo = async (req, res, next) => {
       label: "[todosController, deleteToDo]",
       message: `start process to delete todo`,
     });
+    // for more security is posisble to extract the owner of each todo that is located in jwt
+    // and first query if
+    // the owner really is who try to delete this todo
+    // let {owner} = req.decoded;
+    // in this case the id is in query params
 
     let { todo } = req.params;
+    let { owner } = req.query;
 
     let isNumber = Number.parseInt(todo);
     if (todo == null || todo == "" || !Number.isInteger(isNumber)) {
@@ -164,11 +199,17 @@ todosController.deleteToDo = async (req, res, next) => {
         .status(STATUS.NOT_FOUND)
         .json({ msg: "Missing todo id parameter..." });
     }
-    let todos = await mysql.query("DELETE FROM ?? WHERE id = ?", [
+    if (owner == null || owner == "") {
+      return res
+        .status(STATUS.UNAUTHORIZED)
+        .json({ msg: "Missing owner query parameter..." });
+    }
+
+    let todos = await mysql.query("DELETE FROM ?? WHERE id = ? AND owner = ?", [
       _table,
       todo,
+      owner,
     ]);
-
     if (todos.affectedRows > 0) {
       return res.json({ msg: "To do deleted successfully..." });
     } else {

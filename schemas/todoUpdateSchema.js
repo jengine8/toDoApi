@@ -3,7 +3,7 @@ const ajvInstance = require("../libs/ajv-config");
 const todoUpdateSchema = {
   type: "object",
   properties: {
-    title: { type: "string", minLength: 3, maxLength: 32 },
+    title: { type: "string", minLength: 3, maxLength: 64 },
     description: { type: "string", minLength: 3, maxLength: 255 },
     progressStatus: {
       type: "number",

@@ -1,7 +1,7 @@
 const config = require("config").get("mysql");
 const mysql = require("mysql");
 const util = require("util");
-
+require("dotenv").config();
 const logger = require("../libs/logger");
 
 const mysqlLib = module.exports;
@@ -11,16 +11,8 @@ const CONNECTION_LIMIT = config.connectionLimit || 10;
 const MYSQL_HOST = config.host;
 const MYSQL_PORT = config.port || 3306;
 const MYSQL_USER = config.user || null;
-const MYSQL_PASS = config.pass || null;
+const MYSQL_PASS = process.env.BD_PASS || null;
 const MYSQL_NAME = config.name;
-
-if (
-  MYSQL_HOST == null ||
-  MYSQL_HOST == "" ||
-  MYSQL_NAME == null ||
-  MYSQL_NAME == ""
-)
-  throw new Error("(mysqlLib)", "check config file for mysql");
 
 const MYSQL_OPTIONS = {
   connectionLimit: CONNECTION_LIMIT,

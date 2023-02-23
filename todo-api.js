@@ -6,8 +6,10 @@ const PORT = config.application.port;
 const ErrorControling = require("./libs/ErrorControl");
 const mysql = require("./libs/mysql");
 const validateRequest = require("./middlewares/validateBodyFields");
+const apiKeyValidator = require("./middlewares/apiKeyValidation");
 const todoSchema = require("./schemas/todoSchema");
 const todoUpdateSchema = require("./schemas/todoUpdateSchema");
+const userSchema = require("./schemas/userSchema");
 require("dotenv").config();
 
 const app = express();
@@ -26,17 +28,28 @@ let dbClient;
   const users = require("./controllers/usersController").init(dbClient);
   const todos = require("./controllers/todosController").init(dbClient);
 
-  router.post("/user", users.createUser);
+  router.post(
+    "/user",
+    apiKeyValidator,
+    validateRequest(userSchema),
+    users.createUser
+  );
 
-  router.post("/todo", validateRequest(todoSchema), todos.createToDo);
-  router.get("/todos/:owner", todos.getAllTodos);
-  router.get("/todo/:todo", todos.getTodo);
+  router.post(
+    "/todo",
+    apiKeyValidator,
+    validateRequest(todoSchema),
+    todos.createToDo
+  );
+  router.get("/todos/:owner", apiKeyValidator, todos.getAllTodos);
+  router.get("/todo/:todo", apiKeyValidator, todos.getTodo);
   router.put(
     "/todo/:todo",
+    apiKeyValidator,
     validateRequest(todoUpdateSchema),
     todos.updateToDo
   );
-  router.delete("/todo/:todo", todos.deleteToDo);
+  router.delete("/todo/:todo", apiKeyValidator, todos.deleteToDo);
 
   app.use("/api", router);
 
