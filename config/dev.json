@@ -1,0 +1,12 @@
+{
+  "application": {
+    "port": 5500
+  },
+  "mysql": {
+    "host": "localhost",
+    "port": 3306,
+    "user": "root",
+    "pass": "veneno95",
+    "name": "todo-api"
+  }
+}
