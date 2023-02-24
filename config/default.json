@@ -1,5 +1,14 @@
 {
   "application": {
     "port": 5500
+  },
+  "mysql": {
+    "host": "localhost",
+    "port": 3306,
+    "user": "root",
+    "name": "todo-api"
+  },
+  "auth": {
+    "apiKey": "abshys687e6gd6ehq8hq9qsjfu7erf7yrf"
   }
 }

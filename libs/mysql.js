@@ -77,6 +77,6 @@ mysqlLib.getClient = async function () {
     label: "[mysql, getClient]",
     message: result,
   });
-  logger.silly("mysql", result);
+
   return _pool;
 };
