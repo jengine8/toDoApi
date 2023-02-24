@@ -4,12 +4,15 @@ const cors = require("cors");
 const express = require("express");
 const PORT = config.application.port;
 const ErrorControling = require("./libs/ErrorControl");
+const ApiErrorHandler = require("./libs/HandlingError");
 const mysql = require("./libs/mysql");
 const validateRequest = require("./middlewares/validateBodyFields");
 const apiKeyValidator = require("./middlewares/apiKeyValidation");
 const todoSchema = require("./schemas/todoSchema");
 const todoUpdateSchema = require("./schemas/todoUpdateSchema");
 const userSchema = require("./schemas/userSchema");
+const STATUS = require("./types/status");
+const CODES = require("./types/codes");
 require("dotenv").config();
 
 const app = express();
@@ -23,7 +26,22 @@ let dbClient;
 (async () => {
   // Connection to Data Base
 
-  dbClient = await mysql.getClient();
+  try {
+    dbClient = await mysql.getClient();
+  } catch (error) {
+    
+    logger.log({
+      level:"error",
+      label:"[mysql connection]",
+      message:error
+    })
+
+    
+
+    
+  }
+
+  
 
   const users = require("./controllers/usersController").init(dbClient);
   const todos = require("./controllers/todosController").init(dbClient);

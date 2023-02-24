@@ -3,7 +3,9 @@ const mysql = require("mysql");
 const util = require("util");
 require("dotenv").config();
 const logger = require("../libs/logger");
-
+const ApiErrorHandler = require("./HandlingError");
+const STATUS = require("../types/status");
+const CODES = require("../types/codes");
 const mysqlLib = module.exports;
 
 const CONNECTION_LIMIT = config.connectionLimit || 10;
@@ -35,7 +37,7 @@ _pool.getConnection((err, connection) => {
         label: "[mysql, getConnection]",
         message: "database connection was closed",
       });
-      throw err;
+      return new ApiErrorHandler(STATUS.FAILED_DEPENDENCY, err, CODES.REMOTE_ERROR);
     }
     if (err.code === "ER_CON_COUNT_ERROR") {
       logger.log({
@@ -44,7 +46,7 @@ _pool.getConnection((err, connection) => {
         message: "database has too many connections",
       });
 
-      throw err;
+      return new ApiErrorHandler(STATUS.FAILED_DEPENDENCY, err, CODES.REMOTE_ERROR);
     }
     if (err.code === "ECONNREFUSED") {
       logger.log({
@@ -53,7 +55,7 @@ _pool.getConnection((err, connection) => {
         message: "database connection was refused",
       });
 
-      throw err;
+      return new ApiErrorHandler(STATUS.FAILED_DEPENDENCY, err, CODES.REMOTE_ERROR);
     }
     if (err.code === "ER_BAD_DB_ERROR") {
       logger.log({
@@ -62,7 +64,7 @@ _pool.getConnection((err, connection) => {
         message: "database name is not valid",
       });
 
-      throw err;
+      return new ApiErrorHandler(STATUS.FAILED_DEPENDENCY, err, CODES.REMOTE_ERROR);
     }
   }
   if (connection) connection.release();
