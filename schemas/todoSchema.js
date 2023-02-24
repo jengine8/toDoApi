@@ -23,7 +23,7 @@ const todoSchema = {
       type: "number",
     },
   },
-  required: ["title", "description", "progressStatus", "deadline"],
+  required: ["title", "description", "progressStatus", "deadline", "owner"],
   additionalProperties: false,
 };
 
