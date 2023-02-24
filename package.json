@@ -1,0 +1,39 @@
+{
+  "name": "todoapi",
+  "version": "1.0.0",
+  "description": "api rest to todos management",
+  "main": "todo-api.js",
+  "scripts": {
+    "dev": "set NODE_ENV=dev& nodemon todo-api.js",
+    "default": "set NODE_ENV=default& nodemon todo-api.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jengine8/toDoApi.git"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "mysql"
+  ],
+  "author": "jengine",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jengine8/toDoApi/issues"
+  },
+  "homepage": "https://github.com/jengine8/toDoApi#readme",
+  "dependencies": {
+    "ajv": "^8.12.0",
+    "ajv-formats": "^2.1.1",
+    "bcrypt-nodejs": "^0.0.3",
+    "config": "^3.3.9",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.1.2",
+    "sequelize": "^6.28.1",
+    "util": "^0.12.5",
+    "winston": "^3.8.2"
+  }
+}
